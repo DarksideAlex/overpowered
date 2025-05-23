@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"package": "de.alex.overpowered.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"AnvilScreenHandlerMixin",
+		"ForgingScreenHandlerMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

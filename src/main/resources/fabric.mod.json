@@ -1,0 +1,45 @@
+{
+	"schemaVersion": 1,
+	"id": "overpowered",
+	"version": "${version}",
+	"name": "Overpowered",
+	"description": "Combine enchantments beyond max level in the anvil",
+	"authors": [
+		"Alex2739"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "AOSL-1.0",
+	"icon": "assets/overpowered/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"de.alex.overpowered.Overpowered"
+		],
+		"client": [
+			"de.alex.overpowered.OverpoweredClient"
+		],
+		"modmenu": [ "de.alex.overpowered.ModMenuApiImpl" ]
+	},
+	"mixins": [
+		"overpowered.mixins.json",
+		{
+			"config": "overpowered.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"accessWidener": "overpowered.accesswidener",
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"minecraft": ">=1.20 <1.21",
+		"java": ">=17",
+		"fabric-api": "*",
+		"yet_another_config_lib_v3": ">=3.6.0"
+	},
+	"suggests": {
+		"modmenu": "*",
+		"enchantment-level-fix": "*"
+	}
+}
