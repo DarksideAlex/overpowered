@@ -42,7 +42,7 @@ public class AnvilScreenHandlerMixin {
         ItemStack left = self.getSlot(0).getStack();
         ItemStack right = self.getSlot(1).getStack();
 
-        if (right.getItem() == Items.ENCHANTED_BOOK || right.getItem() == left.getItem()) {
+        if ((right.getItem() == Items.ENCHANTED_BOOK || right.getItem() == left.getItem()) && left.isEnchantable()) {
             Map<Enchantment, Integer> resultMap = new HashMap<>(EnchantmentHelper.get(left));
             EnchantmentHelper.get(right).forEach((enchant, level) -> {
                 int current = resultMap.getOrDefault(enchant, 0);
@@ -52,9 +52,21 @@ public class AnvilScreenHandlerMixin {
             });
 
             ItemStack result = left.copy();
+
+            float repairCost = 0;
+            if (left.isDamageable() && right.isDamageable() && left.getItem() == right.getItem()) {
+                float leftDur = left.getMaxDamage() - left.getDamage();
+                float rightDur = right.getMaxDamage() - right.getDamage();
+                float combined = leftDur + rightDur;
+                float newDamage = Math.min(left.getMaxDamage(), Math.max(left.getMaxDamage() - combined, 0));
+                result.setDamage((int) newDamage);
+
+                repairCost = ( 1 + (float) left.getMaxDamage() / 128) * (Math.max(left.getDamage(), right.getDamage()) - newDamage) / left.getMaxDamage();
+            }
+
             EnchantmentHelper.set(resultMap, result);
 
-            int totalLevels = EnchantmentHelper.get(result)
+            int enchantCost = EnchantmentHelper.get(result)
                     .values()
                     .stream()
                     .mapToInt(Integer::intValue)
@@ -62,8 +74,10 @@ public class AnvilScreenHandlerMixin {
 
             int levelModifier = config.levelMultiplier;
 
+            float totalCost = enchantCost + repairCost;
+
             self.output.setStack(0, result);
-            this.levelCost.set(totalLevels*levelModifier);
+            this.levelCost.set((int) (totalCost * levelModifier));
 
             ci.cancel();
         }
